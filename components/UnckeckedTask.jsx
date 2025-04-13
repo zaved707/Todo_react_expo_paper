@@ -9,7 +9,7 @@ const CheckedTask=(props)=>{
     return (
       <TouchableOpacity activeOpacity={0.8}  >
         <View style={{display:'flex' , alignItems: 'center',flexDirection:'row', backgroundColor: theme.colors.primary, margin: 10, padding: 10,  borderRadius: 10}}>
-          <TouchableOpacity onPress={()=>props.UncheckHandleFunction(props.index)}>       
+          <TouchableOpacity  onPress={()=>props.UncheckHandleFunction(props.index)}>       
              <MaterialIcons name="radio-button-unchecked" size={24} color="black" />
           </TouchableOpacity>
 

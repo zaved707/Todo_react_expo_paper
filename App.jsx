@@ -3,7 +3,7 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
+  TouchableNativeFeedback,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { useState } from "react";
@@ -73,26 +73,46 @@ export default function App() {
     {
       task: "i have to bring rice today",
       uuid: 1,
-      isCompleted: false,
     },
   ]);
-
+  const [completeTasks, setCompleteTasks] = useState([
+    {
+      task: "completeTasks",
+      uuid: 1,
+    },
+  ]);
   const addTask = (Task) => {
-    setTasks([
-      ...tasks,
-      {
-        task: Task,
-        uuid: 1,
-        isCompleted: false,
-      },
-    ]);
-    setText("");
+    if (Task !== '') {
+      setTasks([
+        ...tasks,
+        {
+          task: Task,
+          uuid: 1,
+          isCompleted: false,
+        },
+      ]);
+      setText("");
+    }
   };
-  const handleClick = (index) => {
+  const handleDeleteUncheckedTask = (index) => {
     let itemsCopy = [...tasks];
     itemsCopy.splice(index, 1);
     setTasks(itemsCopy);
   };
+  const handleUncheck = (index) => {
+    let item = completeTasks[index]
+    let itemsCopy = [...completeTasks];
+    itemsCopy.splice(index, 1);
+    setCompleteTasks(itemsCopy);
+    setTasks([item, ...tasks])
+  }
+  const handleCheck = (index) => {
+    let item = tasks[index]
+    let itemsCopy = [...tasks];
+    itemsCopy.splice(index, 1);
+    setTasks(itemsCopy);
+    setCompleteTasks([item, ...completeTasks])
+  }
 
   return (
     <PaperProvider theme={theme2}>
@@ -105,7 +125,17 @@ export default function App() {
             return (
               <UncheckedTask
                 key={randomUUID()}
-                UncheckHandleFunction={handleClick}
+                UncheckHandleFunction={handleCheck}
+                index={index}
+                text={task.task}
+              />
+            );
+          })}
+          {completeTasks.map((task, index) => {
+            return (
+              <CheckedTask
+                key={index}
+                UncheckHandleFunction={handleUncheck}
                 index={index}
                 text={task.task}
               />
@@ -116,26 +146,34 @@ export default function App() {
           <TextInput
             style={{
               flex: 2,
+
             }}
+            multiline={true}
             label="task"
             value={text}
             onChangeText={(text) => setText(text)}
           />
-          <Button
-            labelStyle={{ fontSize: 30 }}
-            mode="outlined"
-            icon="send"
-            style={{
-              width: 100,
-              display: "flex",
-              paddingLeft: 35,
-              alignItems: "flex-end",
-              justifyContent: "space-evenly",
-              fontSize: 20,
-              borderRadius: 5,
-            }}
+          <TouchableNativeFeedback
+            // labelStyle={{ fontSize: 30 }}
+            // mode="contained"
+            // icon="send"
+
+
             onPress={() => addTask(text)}
-          ></Button>
+          >
+            <View style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              maxHeight: "100%",
+              flex: 0.5,
+              backgroundColor: theme2.colors.primary,
+              height: "100%",
+              width: "100%"
+            }}>
+              <MaterialIcons name="send" size={24} color="black" />
+            </View>
+          </TouchableNativeFeedback>
         </View>
       </View>
       <StatusBar style="auto" />
